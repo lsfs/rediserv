@@ -4,7 +4,7 @@ public class CargoDTO {
 
     private Long id;
     private String nome;
-    private Long idarea;
+    private Long area;
 
     public Long getId() {
         return id;
@@ -22,11 +22,11 @@ public class CargoDTO {
         this.nome = nome;
     }
 
-    public Long getIdarea() {
-        return idarea;
+    public Long getArea() {
+        return area;
     }
 
-    public void setIdarea(Long idarea) {
-        this.idarea = idarea;
+    public void setArea(Long idarea) {
+        this.area = idarea;
     }
 }
