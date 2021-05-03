@@ -12,11 +12,17 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/area")
+@RequestMapping("/areas")
 public class AreaController {
 
-    @Autowired
     AreaService areaService;
+
+    @Autowired
+    public AreaController(
+            AreaService areaService
+    ){
+        this.areaService = areaService;
+    }
 
     @GetMapping("/listar")
     public ResponseEntity<List<Area>> listar() {
@@ -28,7 +34,7 @@ public class AreaController {
     @PostMapping
     public ResponseEntity<Area> inserir(
             @RequestBody Area area,
-            UriComponentsBuilder uriComponentsBuilder) throws Exception {
+            UriComponentsBuilder uriComponentsBuilder) {
 
         Area areaSalva = areaService.inserir(area);
         URI uri = uriComponentsBuilder.path("/areas/{id}")
@@ -46,12 +52,16 @@ public class AreaController {
         return ResponseEntity.ok().body(area);
     }
 
-    public Area alterar(Long id, Area area) {
-        return null;
+    @PutMapping("/{id}")
+    public Area alterar(@PathVariable Long id,
+                        @RequestBody Area area) {
+
+        return areaService.alterar(id, area);
     }
 
-    public void apagar(Long id) {
-
+    @DeleteMapping("/{id}")
+    public void apagar(@PathVariable Long id) {
+        areaService.apagar(id);
     }
 
 }
