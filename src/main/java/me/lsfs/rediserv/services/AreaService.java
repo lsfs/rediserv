@@ -12,8 +12,12 @@ import java.util.Optional;
 @Service
 public class AreaService {
 
-    @Autowired
     AreaRepository areaRepository;
+
+    @Autowired
+    public AreaService(AreaRepository areaRepository) {
+        this.areaRepository = areaRepository;
+    }
 
     public List<Area> listar() {
         return areaRepository.findAll();
