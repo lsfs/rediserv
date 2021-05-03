@@ -1,6 +1,7 @@
 package me.lsfs.rediserv.services;
 
 import me.lsfs.rediserv.exceptions.DadosException;
+import me.lsfs.rediserv.exceptions.NegocioException;
 import me.lsfs.rediserv.models.Area;
 import me.lsfs.rediserv.repositories.AreaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class AreaService {
         return areaRepository.findAll();
     }
 
-    public Area inserir(Area area) throws Exception {
+    public Area inserir(Area area){
         validar(area);
         return areaRepository.save(area);
     }
@@ -31,14 +32,37 @@ public class AreaService {
     public Area buscar(Long id) {
 
        Area area = areaRepository.findById(id)
-                .orElseThrow(() -> new DadosException("${erro.registroNaoEncontrado}"));
+                .orElseThrow(() -> new DadosException("Erro: Área não localizada"));
 
         return area;
     }
 
-    private void validar(Area area) throws Exception {
+    public void apagar(Long id){
+        validarID(id);
+        areaRepository.deleteById(id);
+    }
+
+    public Area alterar(Long id, Area area) {
+        validar(area);
+        validarID(id);
+
+        Area areaNova = new Area();
+        areaNova.setNome(area.getNome());
+        areaNova.setId(id);
+
+        return areaRepository.save(areaNova);
+    }
+
+
+    private void validar(Area area) {
         if (area.getNome().isBlank() || area.getNome().isEmpty()){
-            throw new Exception("aaaa");
+            throw new NegocioException("Erro: nome inválido");
+        }
+    }
+
+    private void validarID(Long id){
+        if(!areaRepository.existsById(id)){
+            throw new DadosException("ID inválido.");
         }
     }
 
