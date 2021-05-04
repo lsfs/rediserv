@@ -38,13 +38,11 @@ public class AreaService {
     }
 
     public void apagar(Long id){
-        validarID(id);
         areaRepository.deleteById(id);
     }
 
     public Area alterar(Long id, Area area) {
         validar(area);
-        validarID(id);
 
         Area areaNova = new Area();
         areaNova.setNome(area.getNome());
@@ -60,11 +58,6 @@ public class AreaService {
         }
     }
 
-    private void validarID(Long id){
-        if(!areaRepository.existsById(id)){
-            throw new DadosException("ID inválido.");
-        }
-    }
 
 
 

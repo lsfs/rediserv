@@ -8,6 +8,7 @@ import me.lsfs.rediserv.models.dtos.CargoDTO;
 import me.lsfs.rediserv.repositories.CargoRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,9 +45,9 @@ public class CargoService {
         return cargoRepository.save(cargo);
     }
 
-    public Cargo buscar(Long id){
+    public Cargo buscar(Long id) {
         Cargo cargo = cargoRepository.findById(id)
-                .orElseThrow(()-> new DadosException("Erro: Cargo não localizado"));
+                .orElseThrow(() -> new DadosException("Erro: Cargo não localizado"));
 
         return cargo;
     }
@@ -54,23 +55,23 @@ public class CargoService {
     public Cargo alterar(Long id, CargoDTO cargoDTO) {
 
         validarDTO(cargoDTO);
-        validarID(id);
 
-        Cargo cargo = buscar(id);
-
-        cargo = modelMapper.map(cargoDTO, Cargo.class);
+        Cargo cargoNovo = modelMapper.map(cargoDTO, Cargo.class);
         Area areaBuscada = buscarArea(cargoDTO.getArea());
-        cargo.setId(id);
-        cargo.setArea(areaBuscada);
+        cargoNovo.setId(id);
+        cargoNovo.setArea(areaBuscada);
 
-        return cargo;
+        return cargoRepository.save(cargoNovo);
 
     }
 
     public void apagar(Long id) {
-        validarID(id);
+        try {
+            cargoRepository.deleteById(id);
+        }catch (EmptyResultDataAccessException e){
 
-        cargoRepository.deleteById(id);
+            System.out.println(e.getMessage());
+        }
 
     }
 
@@ -82,11 +83,6 @@ public class CargoService {
         if (cargoDTO.getArea() == null) throw new NegocioException("Erro: Área inválida");
     }
 
-    private void validarID(Long id){
-        if(!cargoRepository.existsById(id)){
-            throw new DadosException("ID inválido.");
-        }
-    }
 
     private Cargo converteDTO(CargoDTO cargoDTO) {
 
@@ -95,11 +91,10 @@ public class CargoService {
         return cargo;
     }
 
-    private Area buscarArea(Long idarea){
+    private Area buscarArea(Long idarea) {
         Area areaBuscada = areaService.buscar(idarea);
         return areaBuscada;
     }
-
 
 
 }
