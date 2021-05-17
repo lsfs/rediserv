@@ -1,9 +1,8 @@
 package me.lsfs.rediserv.controllers;
 
 import me.lsfs.rediserv.models.Cidade;
-import me.lsfs.rediserv.models.dtos.CidadeDTO;
+import me.lsfs.rediserv.models.dtos.CidadeSaveDTO;
 import me.lsfs.rediserv.services.CidadeService;
-import me.lsfs.rediserv.services.EstadoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,11 +33,11 @@ public class CidadeController {
 
     @PostMapping
     public ResponseEntity<Cidade> inserir(
-            @RequestBody CidadeDTO cidadeDTO ,
+            @RequestBody CidadeSaveDTO cidadeSaveDTO,
             UriComponentsBuilder uriComponentsBuilder
     ){
 
-        Cidade cidadeSalva = cidadeService.inserir(cidadeDTO);
+        Cidade cidadeSalva = cidadeService.inserir(cidadeSaveDTO);
         URI uri = uriComponentsBuilder.path("/cidades/{id}")
                 .buildAndExpand(cidadeSalva.getId()).toUri();
 
@@ -57,10 +56,10 @@ public class CidadeController {
     @PutMapping("/{id}")
     public Cidade alterar(
             @PathVariable Long id,
-            @RequestBody CidadeDTO cidadeDTO
+            @RequestBody CidadeSaveDTO cidadeSaveDTO
     ) {
 
-        return cidadeService.alterar(id, cidadeDTO);
+        return cidadeService.alterar(id, cidadeSaveDTO);
     }
 
     @DeleteMapping("/{id}")
