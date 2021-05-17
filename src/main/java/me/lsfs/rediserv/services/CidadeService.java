@@ -2,11 +2,9 @@ package me.lsfs.rediserv.services;
 
 import me.lsfs.rediserv.exceptions.DadosException;
 import me.lsfs.rediserv.exceptions.NegocioException;
-import me.lsfs.rediserv.models.Area;
-import me.lsfs.rediserv.models.Cargo;
 import me.lsfs.rediserv.models.Cidade;
 import me.lsfs.rediserv.models.Estado;
-import me.lsfs.rediserv.models.dtos.CidadeDTO;
+import me.lsfs.rediserv.models.dtos.CidadeSaveDTO;
 import me.lsfs.rediserv.repositories.CidadeRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,15 +33,11 @@ public class CidadeService {
         return cidadeRepository.findAll();
     }
 
-    public Cidade inserir(CidadeDTO cidadeDTO) {
+    public Cidade inserir(CidadeSaveDTO cidadeSaveDTO) {
 
-        validarDTO(cidadeDTO);
+        validarDTO(cidadeSaveDTO);
 
-        Cidade cidade = converterDTO(cidadeDTO);
-        Estado estado = estadoService.buscar(cidadeDTO.getEstado());
-
-        cidade.setEstado(estado);
-
+        Cidade cidade = converterDTO(cidadeSaveDTO);
         return cidadeRepository.save(cidade);
     }
 
@@ -56,53 +50,59 @@ public class CidadeService {
 
     }
 
-    public Cidade alterar(Long id, CidadeDTO cidadeDTO) {
+    public Cidade alterar(Long id, CidadeSaveDTO cidadeSaveDTO) {
 
-        validarDTO(cidadeDTO);
+        validarDTO(cidadeSaveDTO);
+        return cidadeRepository.findById(id)
+                .map(registro -> {
+                    registro = converterDTO(cidadeSaveDTO);
+                    registro.setId(id);
 
-        Cidade cidade = modelMapper.map(cidadeDTO, Cidade.class);
-        Estado estadoBuscado = buscarEstado(cidadeDTO.getEstado());
-        cidade.setId(id);
-        cidade.setEstado(estadoBuscado);
+                    return cidadeRepository.save(registro);
 
-        return cidade;
+                }).orElseThrow(
+                        () -> new NegocioException("Id de cidade inválido")
+                );
+
     }
 
     public void apagar(Long id) {
         try {
             cidadeRepository.deleteById(id);
-        }catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             System.out.println(e.getMessage());
         }
 
     }
 
-    private void validarDTO(CidadeDTO cidadeDTO){
+    private void validarDTO(CidadeSaveDTO cidadeSaveDTO) {
 
-        if (cidadeDTO.getNome().isBlank() || cidadeDTO.getNome().isEmpty()){
+        if (cidadeSaveDTO.getNome().isBlank() || cidadeSaveDTO.getNome().isEmpty()) {
             throw new NegocioException("Erro: Nome inválido");
         }
-        if (cidadeDTO.getEstado() == null){
+        if (cidadeSaveDTO.getEstado() == null) {
             throw new NegocioException("Erro: Estado inválido");
         }
 
     }
 
-    private Cidade converterDTO(CidadeDTO cidadeDTO){
+    private Cidade converterDTO(CidadeSaveDTO cidadeSaveDTO) {
 
-        Cidade cidade = modelMapper.map(cidadeDTO, Cidade.class);
+        Cidade cidade = modelMapper.map(cidadeSaveDTO, Cidade.class);
+
+        Estado estado = estadoService.buscar(cidadeSaveDTO.getEstado());
+        cidade.setEstado(estado);
 
         return cidade;
     }
 
 
-    private Estado buscarEstado(Long id){
+    private Estado buscarEstado(Long id) {
 
         Estado estado = estadoService.buscar(id);
         return estado;
 
     }
-
 
 
 }
