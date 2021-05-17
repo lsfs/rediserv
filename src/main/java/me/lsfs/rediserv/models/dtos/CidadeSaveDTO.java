@@ -1,6 +1,6 @@
 package me.lsfs.rediserv.models.dtos;
 
-public class CidadeDTO {
+public class CidadeSaveDTO {
 
     private Long id;
     private String nome;
