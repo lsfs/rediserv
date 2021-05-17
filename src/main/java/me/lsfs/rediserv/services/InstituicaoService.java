@@ -1,12 +1,14 @@
 package me.lsfs.rediserv.services;
 
+import me.lsfs.rediserv.exceptions.DadosException;
 import me.lsfs.rediserv.exceptions.NegocioException;
 import me.lsfs.rediserv.models.Estado;
 import me.lsfs.rediserv.models.Instituicao;
-import me.lsfs.rediserv.models.dtos.InstituicaoDTO;
+import me.lsfs.rediserv.models.dtos.InstituicaoSaveDTO;
 import me.lsfs.rediserv.repositories.InstituicaoRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 
@@ -15,9 +17,9 @@ import java.util.List;
 @Service
 public class InstituicaoService {
 
-    InstituicaoRepository instituicaoRepository;
-    ModelMapper modelMapper;
-    EstadoService estadoService;
+    private InstituicaoRepository instituicaoRepository;
+    private ModelMapper modelMapper;
+    private EstadoService estadoService;
 
     @Autowired
     public InstituicaoService(InstituicaoRepository instituicaoRepository,
@@ -32,42 +34,77 @@ public class InstituicaoService {
         return instituicaoRepository.findAll();
     }
 
-    public Instituicao inserir(InstituicaoDTO instituicaoDTO) {
+    public Instituicao inserir(InstituicaoSaveDTO instituicaoSaveDTO) {
 
-        validarDTO(instituicaoDTO);
-        Instituicao instituicao = converterDTO(instituicaoDTO);
-
-        Long idEstado = instituicaoDTO.getEstado();
-        Estado estado = buscarEstado(idEstado);
-
-        instituicao.setEstado(estado);
+        validarDTO(instituicaoSaveDTO);
+        Instituicao instituicao = converterDTO(instituicaoSaveDTO);
 
         return instituicaoRepository.save(instituicao);
 
     }
 
-    private void validarDTO(InstituicaoDTO instituicaoDTO) {
+    public Instituicao buscar(Long id) {
+        Instituicao instituicao = instituicaoRepository.findById(id)
+                .orElseThrow(() -> new DadosException("Erro: Instituição não localizada"));
 
-        if (instituicaoDTO.getNome().isEmpty() || instituicaoDTO.getNome().isBlank()) {
+        return instituicao;
+    }
+
+    public Instituicao alterar(Long id, InstituicaoSaveDTO instituicaoSaveDTO) {
+
+        validarDTO(instituicaoSaveDTO);
+
+        return instituicaoRepository.findById(id)
+                .map(registro -> {
+                    registro = converterDTO(instituicaoSaveDTO);
+                    registro.setId(id);
+
+                    return instituicaoRepository.save(registro);
+
+                }).orElseThrow(
+                        () -> new NegocioException("Id de instituição inválido")
+                );
+    }
+
+    public void apagar(Long id) {
+
+        try {
+            instituicaoRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+
+            System.out.println(e.getMessage());
+        }
+    }
+
+
+    private void validarDTO(InstituicaoSaveDTO instituicaoSaveDTO) {
+
+        if (instituicaoSaveDTO.getNome().isEmpty() || instituicaoSaveDTO.getNome().isBlank()) {
             throw new NegocioException("Erro: Nome da instituição inválido");
         }
 
-        if (instituicaoDTO.getSigla().isEmpty() || instituicaoDTO.getSigla().isBlank()) {
+        if (instituicaoSaveDTO.getSigla().isEmpty() || instituicaoSaveDTO.getSigla().isBlank()) {
             throw new NegocioException("Erro: Sigla da instituição inválida");
         }
 
-        if (instituicaoDTO.getEstado() == null) {
+        if (instituicaoSaveDTO.getEstado() == null) {
             throw new NegocioException("Erro: Estado da instituição inválido");
         }
 
     }
 
-    private Instituicao converterDTO(InstituicaoDTO instituicaoDTO) {
-        Instituicao instituicao = modelMapper.map(instituicaoDTO, Instituicao.class);
+    private Instituicao converterDTO(InstituicaoSaveDTO instituicaoSaveDTO) {
+
+        Instituicao instituicao = modelMapper.map(instituicaoSaveDTO, Instituicao.class);
+        Long idEstado = instituicaoSaveDTO.getEstado();
+        Estado estado = buscarEstado(idEstado);
+
+        instituicao.setEstado(estado);
+
         return instituicao;
     }
 
-    private Estado buscarEstado(Long id){
+    private Estado buscarEstado(Long id) {
         Estado estado = estadoService.buscar(id);
         return estado;
     }

@@ -1,6 +1,6 @@
 package me.lsfs.rediserv.models.dtos;
 
-public class InstituicaoDTO {
+public class InstituicaoSaveDTO {
 
     private Long id;
     private String nome;

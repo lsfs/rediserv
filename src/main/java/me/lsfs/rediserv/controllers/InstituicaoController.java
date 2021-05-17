@@ -1,23 +1,17 @@
 package me.lsfs.rediserv.controllers;
 
-import me.lsfs.rediserv.models.Cidade;
 import me.lsfs.rediserv.models.Instituicao;
-import me.lsfs.rediserv.models.dtos.InstituicaoDTO;
+import me.lsfs.rediserv.models.dtos.InstituicaoSaveDTO;
 import me.lsfs.rediserv.services.InstituicaoService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/instituicoes")
 public class InstituicaoController {
 
@@ -37,17 +31,39 @@ public class InstituicaoController {
 
     @PostMapping
     public ResponseEntity<Instituicao> inserir(
-            @RequestBody InstituicaoDTO instituicaoDTO,
+            @RequestBody InstituicaoSaveDTO instituicaoSaveDTO,
             UriComponentsBuilder uriComponentsBuilder
     ) {
 
         Instituicao instituicaoSalva = instituicaoService.
-                inserir(instituicaoDTO);
+                inserir(instituicaoSaveDTO);
 
         URI uri = uriComponentsBuilder.path("/instituicoes/{id}")
                 .buildAndExpand(instituicaoSalva.getId()).toUri();
 
         return ResponseEntity.created(uri).body(instituicaoSalva);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Instituicao> buscar(@PathVariable Long id){
+        Instituicao instituicao = instituicaoService.buscar(id);
+
+        return ResponseEntity.ok().body(instituicao);
+    }
+
+    @PutMapping("/{id}")
+    public Instituicao alterar(
+            @PathVariable Long id,
+            @RequestBody InstituicaoSaveDTO instituicaoSaveDTO
+    ){
+        return instituicaoService.alterar(id, instituicaoSaveDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public void apagar(
+            @PathVariable Long id){
+        instituicaoService.apagar(id);
+    }
+
 
 }
