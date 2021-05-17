@@ -40,11 +40,17 @@ public class EstadoService {
     public Estado alterar(Long id, Estado estado) {
 
         validarID(id);
-        String nomeEstado = estado.getNome();
-        String sigla = estado.getSigla();
-        Estado estadoNovo = new Estado(id, nomeEstado, sigla);
+        return estadoRepository.findById(id)
+                .map(registro -> {
+                    registro.setNome(estado.getNome());
+                    registro.setSigla(estado.getSigla());
+                    registro.setId(id);
 
-        return estadoRepository.save(estadoNovo);
+                    return estadoRepository.save(registro);
+
+                }).orElseThrow(
+                        () -> new NegocioException("Id de estado inválido")
+                );
 
     }
 
