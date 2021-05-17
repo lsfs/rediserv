@@ -4,7 +4,7 @@ import me.lsfs.rediserv.exceptions.DadosException;
 import me.lsfs.rediserv.exceptions.NegocioException;
 import me.lsfs.rediserv.models.Area;
 import me.lsfs.rediserv.models.Cargo;
-import me.lsfs.rediserv.models.dtos.CargoDTO;
+import me.lsfs.rediserv.models.dtos.CargoSaveDTO;
 import me.lsfs.rediserv.repositories.CargoRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,12 +35,8 @@ public class CargoService {
         return cargoRepository.findAll();
     }
 
-    public Cargo inserir(CargoDTO cargoDTO) {
-        Cargo cargo = converteDTO(cargoDTO);
-
-        Area areaBuscada = buscarArea(cargoDTO.getArea());
-
-        cargo.setArea(areaBuscada);
+    public Cargo inserir(CargoSaveDTO cargoSaveDTO) {
+        Cargo cargo = converterDTO(cargoSaveDTO);
 
         return cargoRepository.save(cargo);
     }
@@ -52,41 +48,46 @@ public class CargoService {
         return cargo;
     }
 
-    public Cargo alterar(Long id, CargoDTO cargoDTO) {
+    public Cargo alterar(Long id, CargoSaveDTO cargoSaveDTO) {
 
-        validarDTO(cargoDTO);
+        validarDTO(cargoSaveDTO);
+        return cargoRepository.findById(id)
+                .map(registro -> {
+                    registro = converterDTO(cargoSaveDTO);
+                    registro.setId(id);
 
-        Cargo cargoNovo = modelMapper.map(cargoDTO, Cargo.class);
-        Area areaBuscada = buscarArea(cargoDTO.getArea());
-        cargoNovo.setId(id);
-        cargoNovo.setArea(areaBuscada);
+                    return cargoRepository.save(registro);
 
-        return cargoRepository.save(cargoNovo);
+                }).orElseThrow(
+                        () -> new NegocioException("Id de cargo inválido")
+                );
 
     }
 
     public void apagar(Long id) {
         try {
             cargoRepository.deleteById(id);
-        }catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
 
             System.out.println(e.getMessage());
         }
 
     }
 
-    private void validarDTO(CargoDTO cargoDTO) {
-        if (cargoDTO.getNome().isBlank() || cargoDTO.getNome().isBlank()) {
+    private void validarDTO(CargoSaveDTO cargoSaveDTO) {
+        if (cargoSaveDTO.getNome().isBlank() || cargoSaveDTO.getNome().isBlank()) {
             throw new NegocioException("Erro:Nome de cargo inválido");
         }
 
-        if (cargoDTO.getArea() == null) throw new NegocioException("Erro: Área inválida");
+        if (cargoSaveDTO.getArea() == null) throw new NegocioException("Erro: Área inválida");
     }
 
 
-    private Cargo converteDTO(CargoDTO cargoDTO) {
+    private Cargo converterDTO(CargoSaveDTO cargoSaveDTO) {
 
-        Cargo cargo = modelMapper.map(cargoDTO, Cargo.class);
+        Cargo cargo = modelMapper.map(cargoSaveDTO, Cargo.class);
+        Area areaBuscada = buscarArea(cargoSaveDTO.getArea());
+        cargo.setArea(areaBuscada);
 
         return cargo;
     }
