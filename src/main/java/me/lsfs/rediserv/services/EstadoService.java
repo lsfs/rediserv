@@ -44,6 +44,7 @@ public class EstadoService {
                 .map(registro -> {
                     registro.setNome(estado.getNome());
                     registro.setSigla(estado.getSigla());
+                    registro.setRegiao(estado.getRegiao());
                     registro.setId(id);
 
                     return estadoRepository.save(registro);
@@ -68,6 +69,10 @@ public class EstadoService {
 
         if (estado.getSigla().isEmpty() || estado.getSigla().isBlank()) {
             throw new NegocioException("Erro: Sigla inválida");
+        }
+
+        if (estado.getRegiao().isBlank() || estado.getRegiao().isEmpty()){
+            throw new NegocioException("Erro: Nome da região do estado inválido");
         }
     }
 

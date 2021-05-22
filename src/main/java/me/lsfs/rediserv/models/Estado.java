@@ -15,6 +15,8 @@ public class Estado {
 
     private String sigla;
 
+    private String regiao;
+
     public Estado() {
     }
 
@@ -46,6 +48,14 @@ public class Estado {
 
     public void setSigla(String sigla) {
         this.sigla = sigla;
+    }
+
+    public String getRegiao() {
+        return regiao;
+    }
+
+    public void setRegiao(String regiao) {
+        this.regiao = regiao;
     }
 
     @Override
