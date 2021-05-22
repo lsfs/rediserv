@@ -48,6 +48,14 @@ public class CargoService {
         return cargo;
     }
 
+    public List<Cargo> buscarPorArea(Long idArea) {
+        List<Cargo> listaCargos = cargoRepository
+                .findByArea(idArea)
+                .orElseThrow(() -> new DadosException("Cargos não encontrados"));
+
+        return listaCargos;
+    }
+
     public Cargo alterar(Long id, CargoSaveDTO cargoSaveDTO) {
 
         validarDTO(cargoSaveDTO);
@@ -96,6 +104,7 @@ public class CargoService {
         Area areaBuscada = areaService.buscar(idarea);
         return areaBuscada;
     }
+
 
 
 }
