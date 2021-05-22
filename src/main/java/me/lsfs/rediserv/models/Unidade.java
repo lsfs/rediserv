@@ -1,6 +1,9 @@
 package me.lsfs.rediserv.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -23,6 +26,10 @@ public class Unidade {
     private Cidade cidade;
 
     private String telefone;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "unidades", fetch = FetchType.EAGER)
+    private List<Proposta> propostas;
 
     public Unidade() {
     }
@@ -73,6 +80,14 @@ public class Unidade {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public List<Proposta> getPropostas() {
+        return propostas;
+    }
+
+    public void setPropostas(List<Proposta> propostas) {
+        this.propostas = propostas;
     }
 
     @Override
