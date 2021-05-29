@@ -2,9 +2,10 @@ package me.lsfs.rediserv.services;
 
 import me.lsfs.rediserv.exceptions.DadosException;
 import me.lsfs.rediserv.exceptions.NegocioException;
-import me.lsfs.rediserv.models.Area;
 import me.lsfs.rediserv.models.Estado;
+import me.lsfs.rediserv.models.Instituicao;
 import me.lsfs.rediserv.repositories.EstadoRepository;
+import me.lsfs.rediserv.repositories.InstituicaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +15,14 @@ import java.util.List;
 public class EstadoService {
 
     EstadoRepository estadoRepository;
+    InstituicaoRepository instituicaoRepository;
 
     @Autowired
-    public EstadoService(EstadoRepository estadoRepository) {
+    public EstadoService(EstadoRepository estadoRepository,
+    InstituicaoRepository instituicaoRepository) {
         this.estadoRepository = estadoRepository;
+        this.instituicaoRepository = instituicaoRepository;
+
     }
 
     public List<Estado> listar() {
@@ -35,6 +40,13 @@ public class EstadoService {
                 .orElseThrow(() -> new DadosException("Erro: Estado não localizado"));
 
         return estado;
+    }
+
+
+    public Estado buscaEstadoPorSigla(String sigla){
+
+        return  estadoRepository.findEstadoBySigla(sigla)
+                .orElseThrow(() -> new DadosException("Erro: Sigla inválida"));
     }
 
     public Estado alterar(Long id, Estado estado) {
@@ -81,6 +93,7 @@ public class EstadoService {
             throw new DadosException("ID inválido.");
         }
     }
+
 
 
 }

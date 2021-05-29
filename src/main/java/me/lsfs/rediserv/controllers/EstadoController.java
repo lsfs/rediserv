@@ -1,8 +1,8 @@
 package me.lsfs.rediserv.controllers;
 
 import me.lsfs.rediserv.models.Estado;
+import me.lsfs.rediserv.models.Instituicao;
 import me.lsfs.rediserv.services.EstadoService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
