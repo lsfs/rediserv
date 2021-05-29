@@ -61,6 +61,10 @@ public class UnidadeService {
         return unidade;
     }
 
+    public List<Unidade> buscarPorInstituicao(Long id) {
+        return unidadeRepository.findByInstituicao(id);
+    }
+
     public Unidade alterar(Long id, UnidadeSaveDTO unidadeSaveDTO) {
 
         validarDTO(unidadeSaveDTO);
@@ -135,7 +139,5 @@ public class UnidadeService {
         return unidadeGetDTO;
 
     }
-
-
 
 }
