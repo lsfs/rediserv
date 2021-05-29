@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/unidades")
+@CrossOrigin(origins = "http://localhost:4200")
 public class UnidadeController {
 
     private UnidadeService unidadeService;
@@ -52,6 +53,15 @@ public class UnidadeController {
         Unidade unidade = unidadeService.buscar(id);
 
         return ResponseEntity.ok().body(unidade);
+    }
+
+    @GetMapping("/instituicao/{id}")
+    public ResponseEntity<List<Unidade>> buscarUnidades(
+            @PathVariable Long id
+    ){
+        List<Unidade> unidades = unidadeService.buscarPorInstituicao(id);
+
+        return ResponseEntity.ok().body(unidades);
     }
 
     @PutMapping("/{id}")
