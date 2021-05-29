@@ -4,6 +4,7 @@ import me.lsfs.rediserv.exceptions.DadosException;
 import me.lsfs.rediserv.exceptions.NegocioException;
 import me.lsfs.rediserv.models.Estado;
 import me.lsfs.rediserv.models.Instituicao;
+import me.lsfs.rediserv.models.Unidade;
 import me.lsfs.rediserv.models.dtos.InstituicaoSaveDTO;
 import me.lsfs.rediserv.repositories.InstituicaoRepository;
 import org.modelmapper.ModelMapper;
@@ -50,6 +51,32 @@ public class InstituicaoService {
         return instituicao;
     }
 
+    public List<Instituicao> filtrarPorEstado(String sigla) {
+
+        Estado estado = buscarEstadoPorSigla(sigla);
+        Long idEstado = estado.getId();
+
+
+        List<Instituicao> instituicoes =
+                instituicaoRepository.findInstituicaoByEstado(idEstado);
+
+        return instituicoes;
+
+    }
+
+    public List<Instituicao> filtrarPorRegiao(String regiao) {
+
+        List<Instituicao> instituicoes = instituicaoRepository.findInstituicaoByRegiao(regiao);
+
+        return instituicoes;
+    }
+
+
+    private Estado buscarEstadoPorSigla(String sigla){
+        return  estadoService.buscaEstadoPorSigla(sigla);
+    }
+
+
     public Instituicao alterar(Long id, InstituicaoSaveDTO instituicaoSaveDTO) {
 
         validarDTO(instituicaoSaveDTO);
@@ -65,6 +92,7 @@ public class InstituicaoService {
                         () -> new NegocioException("Id de instituição inválido")
                 );
     }
+
 
     public void apagar(Long id) {
 
@@ -97,17 +125,18 @@ public class InstituicaoService {
 
         Instituicao instituicao = modelMapper.map(instituicaoSaveDTO, Instituicao.class);
         Long idEstado = instituicaoSaveDTO.getEstado();
-        Estado estado = buscarEstado(idEstado);
+        Estado estado = buscarEstadoPorSigla(idEstado);
 
         instituicao.setEstado(estado);
 
         return instituicao;
     }
 
-    private Estado buscarEstado(Long id) {
+    private Estado buscarEstadoPorSigla(Long id) {
         Estado estado = estadoService.buscar(id);
         return estado;
     }
+
 
 
 }
