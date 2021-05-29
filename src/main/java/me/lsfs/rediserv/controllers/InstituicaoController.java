@@ -1,6 +1,7 @@
 package me.lsfs.rediserv.controllers;
 
 import me.lsfs.rediserv.models.Instituicao;
+import me.lsfs.rediserv.models.Unidade;
 import me.lsfs.rediserv.models.dtos.InstituicaoSaveDTO;
 import me.lsfs.rediserv.services.InstituicaoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/instituicoes")
+@CrossOrigin(origins = "http://localhost:4200")
 public class InstituicaoController {
 
     InstituicaoService instituicaoService;
@@ -28,6 +30,27 @@ public class InstituicaoController {
 
         return ResponseEntity.ok().body(instituicoes);
     }
+
+    @GetMapping("/estado/{sigla}")
+    public ResponseEntity<List<Instituicao>> buscarPorEstado(
+            @PathVariable String sigla
+    ){
+
+        List<Instituicao> instituicoes = instituicaoService.filtrarPorEstado(sigla);
+        return ResponseEntity.ok().body(instituicoes);
+
+    }
+
+    @GetMapping("/regiao/{regiao}")
+    public ResponseEntity<List<Instituicao>> buscarPorRegiao(
+            @PathVariable String regiao){
+
+        List<Instituicao> instituicoes = instituicaoService.filtrarPorRegiao(regiao);
+
+        return ResponseEntity.ok().body(instituicoes);
+    }
+
+
 
     @PostMapping
     public ResponseEntity<Instituicao> inserir(
@@ -50,6 +73,7 @@ public class InstituicaoController {
 
         return ResponseEntity.ok().body(instituicao);
     }
+
 
     @PutMapping("/{id}")
     public Instituicao alterar(
