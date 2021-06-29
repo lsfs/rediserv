@@ -15,6 +15,7 @@ public class Instituicao {
 
     private String nome;
     private String sigla;
+    private String endereco;
 
  
     @ManyToOne
@@ -46,6 +47,14 @@ public class Instituicao {
 
     public void setSigla(String sigla) {
         this.sigla = sigla;
+    }
+
+    public String getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(String endereco) {
+        this.endereco = endereco;
     }
 
     public Estado getEstado() {
