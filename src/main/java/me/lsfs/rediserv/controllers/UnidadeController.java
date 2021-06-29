@@ -1,11 +1,15 @@
 package me.lsfs.rediserv.controllers;
 
 
+import me.lsfs.rediserv.models.Instituicao;
 import me.lsfs.rediserv.models.Unidade;
-import me.lsfs.rediserv.models.dtos.UnidadeGetDTO;
-import me.lsfs.rediserv.models.dtos.UnidadeSaveDTO;
+import me.lsfs.rediserv.dtos.UnidadeGetDTO;
+import me.lsfs.rediserv.dtos.UnidadeSaveDTO;
 import me.lsfs.rediserv.services.UnidadeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -33,6 +37,18 @@ public class UnidadeController {
         return ResponseEntity.ok().body(unidades);
     }
 
+
+    @CrossOrigin(origins = "http://localhost:4200")
+    @GetMapping("/listarPaginada")
+    public ResponseEntity<Page<UnidadeGetDTO>> listar(
+            @PageableDefault(sort = "id") Pageable pageable
+    ){
+
+        Page<UnidadeGetDTO> unidades = unidadeService.listar(pageable);
+
+        return ResponseEntity.ok().body(unidades);
+    }
+
     @PostMapping
     public ResponseEntity<Unidade> inserir(
             @RequestBody UnidadeSaveDTO unidadeSaveDTO,
@@ -49,17 +65,17 @@ public class UnidadeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Unidade> buscar(@PathVariable Long id){
-        Unidade unidade = unidadeService.buscar(id);
+    public ResponseEntity<UnidadeGetDTO> buscar(@PathVariable Long id){
+        UnidadeGetDTO unidade = unidadeService.buscar(id);
 
         return ResponseEntity.ok().body(unidade);
     }
 
     @GetMapping("/instituicao/{id}")
-    public ResponseEntity<List<Unidade>> buscarUnidades(
+    public ResponseEntity<List<UnidadeGetDTO>> buscarUnidades(
             @PathVariable Long id
     ){
-        List<Unidade> unidades = unidadeService.buscarPorInstituicao(id);
+        List<UnidadeGetDTO> unidades = unidadeService.buscarPorInstituicao(id);
 
         return ResponseEntity.ok().body(unidades);
     }
