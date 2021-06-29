@@ -1,10 +1,10 @@
-package me.lsfs.rediserv.models.dtos;
+package me.lsfs.rediserv.dtos;
 
-public class CidadeSaveDTO {
+public class CargoSaveDTO {
 
     private Long id;
     private String nome;
-    private Long estado;
+    private Long area;
 
     public Long getId() {
         return id;
@@ -22,11 +22,11 @@ public class CidadeSaveDTO {
         this.nome = nome;
     }
 
-    public Long getEstado() {
-        return estado;
+    public Long getArea() {
+        return area;
     }
 
-    public void setEstado(Long estado) {
-        this.estado = estado;
+    public void setArea(Long idarea) {
+        this.area = idarea;
     }
 }

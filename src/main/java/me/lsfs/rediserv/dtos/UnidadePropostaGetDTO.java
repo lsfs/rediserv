@@ -1,4 +1,4 @@
-package me.lsfs.rediserv.models.dtos;
+package me.lsfs.rediserv.dtos;
 
 public class UnidadePropostaGetDTO {
 

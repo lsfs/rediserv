@@ -1,10 +1,11 @@
-package me.lsfs.rediserv.models.dtos;
+package me.lsfs.rediserv.dtos;
 
 public class InstituicaoSaveDTO {
 
     private Long id;
     private String nome;
     private String sigla;
+    private String endereco;
     private Long estado;
 
     public Long getId() {
@@ -29,6 +30,14 @@ public class InstituicaoSaveDTO {
 
     public void setSigla(String sigla) {
         this.sigla = sigla;
+    }
+
+    public String getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(String endereco) {
+        this.endereco = endereco;
     }
 
     public Long getEstado() {
