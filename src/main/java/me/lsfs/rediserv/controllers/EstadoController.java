@@ -4,6 +4,9 @@ import me.lsfs.rediserv.models.Estado;
 import me.lsfs.rediserv.models.Instituicao;
 import me.lsfs.rediserv.services.EstadoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -30,6 +33,19 @@ public class EstadoController {
 
         return ResponseEntity.ok().body(estados);
     }
+
+
+    @CrossOrigin(origins = "http://localhost:4200")
+    @GetMapping("/listarPaginada")
+    public ResponseEntity<Page<Estado>> listar(
+            @PageableDefault(sort = "id") Pageable pageable
+    ){
+
+        Page<Estado> estados = estadoService.listar(pageable);
+
+        return ResponseEntity.ok().body(estados);
+    }
+
 
     @PostMapping
     public ResponseEntity<Estado> inserir(
