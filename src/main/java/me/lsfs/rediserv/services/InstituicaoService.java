@@ -4,12 +4,13 @@ import me.lsfs.rediserv.exceptions.DadosException;
 import me.lsfs.rediserv.exceptions.NegocioException;
 import me.lsfs.rediserv.models.Estado;
 import me.lsfs.rediserv.models.Instituicao;
-import me.lsfs.rediserv.models.Unidade;
-import me.lsfs.rediserv.models.dtos.InstituicaoSaveDTO;
+import me.lsfs.rediserv.dtos.InstituicaoSaveDTO;
 import me.lsfs.rediserv.repositories.InstituicaoRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
@@ -34,6 +35,12 @@ public class InstituicaoService {
     public List<Instituicao> listar() {
         return instituicaoRepository.findAll();
     }
+
+
+    public Page<Instituicao> listar(Pageable pageable) {
+        return instituicaoRepository.listar(pageable);
+    }
+
 
     public Instituicao inserir(InstituicaoSaveDTO instituicaoSaveDTO) {
 
@@ -73,7 +80,8 @@ public class InstituicaoService {
 
 
     private Estado buscarEstadoPorSigla(String sigla){
-        return  estadoService.buscaEstadoPorSigla(sigla);
+        return
+                estadoService.buscaEstadoPorSigla(sigla);
     }
 
 
