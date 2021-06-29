@@ -1,11 +1,15 @@
 package me.lsfs.rediserv.controllers;
 
+import me.lsfs.rediserv.models.Cidade;
 import me.lsfs.rediserv.models.Instituicao;
-import me.lsfs.rediserv.models.Unidade;
-import me.lsfs.rediserv.models.dtos.InstituicaoSaveDTO;
+import me.lsfs.rediserv.dtos.InstituicaoSaveDTO;
 import me.lsfs.rediserv.services.InstituicaoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -29,6 +33,17 @@ public class InstituicaoController {
         List<Instituicao> instituicoes = instituicaoService.listar();
 
         return ResponseEntity.ok().body(instituicoes);
+    }
+
+    @CrossOrigin(origins = "http://localhost:4200")
+    @GetMapping("/listarPaginada")
+    public ResponseEntity<Page<Instituicao>> listar(
+            @PageableDefault(sort = "id") Pageable pageable
+    ){
+
+        Page<Instituicao> instituicao = instituicaoService.listar(pageable);
+
+        return ResponseEntity.ok().body(instituicao);
     }
 
     @GetMapping("/estado/{sigla}")
