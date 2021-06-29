@@ -2,17 +2,18 @@ package me.lsfs.rediserv.services;
 
 import me.lsfs.rediserv.exceptions.DadosException;
 import me.lsfs.rediserv.exceptions.NegocioException;
-import me.lsfs.rediserv.models.Cargo;
 import me.lsfs.rediserv.models.Cidade;
 import me.lsfs.rediserv.models.Instituicao;
 import me.lsfs.rediserv.models.Unidade;
-import me.lsfs.rediserv.models.dtos.CargoSaveDTO;
-import me.lsfs.rediserv.models.dtos.UnidadeGetDTO;
-import me.lsfs.rediserv.models.dtos.UnidadeSaveDTO;
+import me.lsfs.rediserv.dtos.UnidadeGetDTO;
+import me.lsfs.rediserv.dtos.UnidadeSaveDTO;
 import me.lsfs.rediserv.repositories.UnidadeRepository;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,14 +37,23 @@ public class UnidadeService {
 
     public List<UnidadeGetDTO> listar() {
 
-        List<Unidade> unidades = unidadeRepository.findAll();
+        List<UnidadeGetDTO> unidades = unidadeRepository.findAll()
+                .stream().map(unidade -> converterModel(unidade)).collect(Collectors.toList());
 
-        List<UnidadeGetDTO> unidadeGetDTOS = unidades.stream().map(
-                unidade -> converterModel(unidade)).collect(Collectors.toList());
-
-        return unidadeGetDTOS;
+        return unidades;
 
     }
+
+    public Page<UnidadeGetDTO> listar(Pageable pageable) {
+
+        Page<UnidadeGetDTO> unidades = unidadeRepository.listar(pageable)
+                .map( unidade -> converterModel(unidade));
+
+        return unidades;
+
+    }
+
+
 
     public Unidade inserir(UnidadeSaveDTO unidadeSaveDTO) {
 
@@ -54,15 +64,22 @@ public class UnidadeService {
     }
 
 
-    public Unidade buscar(Long id) {
+    public UnidadeGetDTO buscar(Long id) {
         Unidade unidade = unidadeRepository.findById(id)
                 .orElseThrow(() -> new DadosException("Erro: Unidade não localizada"));
 
-        return unidade;
+        UnidadeGetDTO unidadeGetDTO = converterModel(unidade);
+
+        return unidadeGetDTO;
     }
 
-    public List<Unidade> buscarPorInstituicao(Long id) {
-        return unidadeRepository.findByInstituicao(id);
+    public List<UnidadeGetDTO> buscarPorInstituicao(Long id) {
+
+        List<UnidadeGetDTO> unidades = unidadeRepository.findByInstituicao(id)
+                .stream().map( unidade -> converterModel(unidade)).collect(Collectors.toList());
+
+
+        return unidades;
     }
 
     public Unidade alterar(Long id, UnidadeSaveDTO unidadeSaveDTO) {
