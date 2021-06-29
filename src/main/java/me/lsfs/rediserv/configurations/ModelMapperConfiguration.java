@@ -18,7 +18,11 @@ public class ModelMapperConfiguration {
     public ModelMapper modelMapper(){
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        
+
+        modelMapper.addConverter(getStringToLocalDateConverter());
+        modelMapper.addConverter(getLocalDateToStringConverter());
+
+
 
         return modelMapper;
     }
