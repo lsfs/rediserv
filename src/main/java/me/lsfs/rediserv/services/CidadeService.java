@@ -4,11 +4,13 @@ import me.lsfs.rediserv.exceptions.DadosException;
 import me.lsfs.rediserv.exceptions.NegocioException;
 import me.lsfs.rediserv.models.Cidade;
 import me.lsfs.rediserv.models.Estado;
-import me.lsfs.rediserv.models.dtos.CidadeSaveDTO;
+import me.lsfs.rediserv.dtos.CidadeSaveDTO;
 import me.lsfs.rediserv.repositories.CidadeRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,6 +34,12 @@ public class CidadeService {
     public List<Cidade> listar() {
         return cidadeRepository.findAll();
     }
+
+
+    public Page<Cidade> listar(Pageable pageable) {
+        return cidadeRepository.listar(pageable);
+    }
+
 
     public Cidade inserir(CidadeSaveDTO cidadeSaveDTO) {
 
@@ -105,4 +113,13 @@ public class CidadeService {
     }
 
 
+    public List<Cidade> filtrarPorEstado(Long idEstado) {
+        Estado estado = estadoService.buscar(idEstado);
+
+        Long idEstadoEncontrado = estado.getId();
+
+        List<Cidade> cidades = cidadeRepository.findCidadeByEstado(idEstadoEncontrado);
+
+        return cidades;
+    }
 }
