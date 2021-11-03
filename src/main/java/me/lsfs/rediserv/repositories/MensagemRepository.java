@@ -1,10 +1,10 @@
 package me.lsfs.rediserv.repositories;
 
-import me.lsfs.rediserv.models.Area;
+import me.lsfs.rediserv.models.Mensagem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AreaRepository extends JpaRepository<Area, Long> {
+public interface MensagemRepository extends JpaRepository<Mensagem, Long> {
 
 }
