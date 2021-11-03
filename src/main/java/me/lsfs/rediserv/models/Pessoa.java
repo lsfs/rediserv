@@ -1,47 +1,85 @@
 package me.lsfs.rediserv.models;
 
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import me.lsfs.rediserv.models.utils.TokenConfirmacao;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.*;
 
 @Entity
-@Table(name="pessoa")
-public class Pessoa implements UserDetails {
-
+@Table(	name = "pessoa",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "email")
+        })
+public class Pessoa {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotBlank
+    @Size(max = 20)
     private String nome;
 
+    @NotBlank
+    @Size(max = 50)
+    @Email
     private String email;
 
-    private String senha;
-
-    private boolean isPessoaAtiva;
-
-    private boolean bloqueada;
-
-    @ManyToMany(mappedBy = "pessoas", fetch = FetchType.EAGER)
-    private Set<Role> roles = new HashSet<>();
+    @NotBlank
+    @Size(max = 120)
+    private String password;
 
     @ManyToOne
-    @JoinColumn(name = "idcargo")
-    private Cargo cargo;
-
-    @ManyToOne
-    @JoinColumn(name = "idunidade")
+    @JoinColumn(name="idunidade")
     private Unidade unidade;
 
+    @ManyToOne
+    @JoinColumn(name="idcargo")
+    private Cargo cargo;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "candidatos", cascade = CascadeType.ALL)
+    private List<Proposta> propostasCandidatadas;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "autorProposta", cascade = CascadeType.ALL)
+    private List<Proposta> propostasCriadas;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "autorMensagem", cascade = CascadeType.ALL)
+    private List<Mensagem> mensagens;
+
+    private boolean enabled = false;
+
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinTable(	name = "pessoa_role",
+            joinColumns = @JoinColumn(name = "pessoa_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
     public Pessoa() {
+    }
+
+    @OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL)
+    private List<TokenConfirmacao> tokenConfirmacao;
+
+
+    public Pessoa(String nome, String email, String password, Unidade unidade, Cargo cargo) {
+        this.nome = nome;
+        this.email = email;
+        this.password = password;
+        this.unidade = unidade;
+        this.cargo = cargo;
     }
 
     public Long getId() {
@@ -56,8 +94,8 @@ public class Pessoa implements UserDetails {
         return nome;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setNome(String username) {
+        this.nome = username;
     }
 
     public String getEmail() {
@@ -68,20 +106,20 @@ public class Pessoa implements UserDetails {
         this.email = email;
     }
 
-    public String getSenha() {
-        return senha;
+    public String getPassword() {
+        return password;
     }
 
-    public void setSenha(String senha) {
-        this.senha = senha;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public Cargo getCargo() {
-        return cargo;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setCargo(Cargo cargo) {
-        this.cargo = cargo;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
     public Unidade getUnidade() {
@@ -92,59 +130,38 @@ public class Pessoa implements UserDetails {
         this.unidade = unidade;
     }
 
-    public boolean isPessoaAtiva() {
-        return isPessoaAtiva;
+    public Cargo getCargo() {
+        return cargo;
     }
 
-    public void setPessoaAtiva(boolean pessoaAtiva) {
-        isPessoaAtiva = pessoaAtiva;
+    public void setCargo(Cargo cargo) {
+        this.cargo = cargo;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        Set<Role> roles = this.roles;
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-
-        for (Role perfil : roles){
-            authorities.add(new SimpleGrantedAuthority(perfil.getNome()));
-        }
-        return authorities;
-    }
-
-    @Override
-    public String getPassword() {
-        return this.senha;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return !bloqueada;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
     public boolean isEnabled() {
-        return isPessoaAtiva;
+        return enabled;
     }
 
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public List<Proposta> getPropostasCandidatadas() {
+        return propostasCandidatadas;
+    }
+
+    public void setPropostasCandidatadas(List<Proposta> propostas) {
+        this.propostasCandidatadas = propostas;
+    }
+
+    public List<Proposta> getPropostasCriadas() {
+        return propostasCriadas;
+    }
+
+    public void setPropostasCriadas(List<Proposta> propostasCriadas) {
+        this.propostasCriadas = propostasCriadas;
+    }
 
     @Override
     public String toString() {
