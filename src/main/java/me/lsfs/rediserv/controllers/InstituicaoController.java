@@ -1,6 +1,5 @@
 package me.lsfs.rediserv.controllers;
 
-import me.lsfs.rediserv.models.Cidade;
 import me.lsfs.rediserv.models.Instituicao;
 import me.lsfs.rediserv.dtos.InstituicaoSaveDTO;
 import me.lsfs.rediserv.services.InstituicaoService;
@@ -9,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 

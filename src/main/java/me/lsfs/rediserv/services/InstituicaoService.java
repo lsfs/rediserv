@@ -2,10 +2,10 @@ package me.lsfs.rediserv.services;
 
 import me.lsfs.rediserv.exceptions.DadosException;
 import me.lsfs.rediserv.exceptions.NegocioException;
+import me.lsfs.rediserv.repositories.InstituicaoRepository;
 import me.lsfs.rediserv.models.Estado;
 import me.lsfs.rediserv.models.Instituicao;
 import me.lsfs.rediserv.dtos.InstituicaoSaveDTO;
-import me.lsfs.rediserv.repositories.InstituicaoRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;

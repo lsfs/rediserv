@@ -1,12 +1,13 @@
 package me.lsfs.rediserv.repositories;
 
 import me.lsfs.rediserv.models.Instituicao;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface InstituicaoRepository extends JpaRepository<Instituicao, Long> {
@@ -19,4 +20,8 @@ public interface InstituicaoRepository extends JpaRepository<Instituicao, Long> 
     @Query("SELECT i FROM Instituicao i WHERE UPPER(i.estado.regiao) " +
             "LIKE UPPER(:regiao) order by i.estado.id")
     List<Instituicao> findInstituicaoByRegiao(String regiao);
+
+    @Query("SELECT DISTINCT i FROM Instituicao i")
+    Page<Instituicao> listar(Pageable pageable);
+
 }
