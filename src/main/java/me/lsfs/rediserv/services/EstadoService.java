@@ -2,9 +2,9 @@ package me.lsfs.rediserv.services;
 
 import me.lsfs.rediserv.exceptions.DadosException;
 import me.lsfs.rediserv.exceptions.NegocioException;
-import me.lsfs.rediserv.models.Estado;
 import me.lsfs.rediserv.repositories.EstadoRepository;
 import me.lsfs.rediserv.repositories.InstituicaoRepository;
+import me.lsfs.rediserv.models.Estado;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
