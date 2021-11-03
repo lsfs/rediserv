@@ -1,15 +1,25 @@
 package me.lsfs.rediserv.dtos;
 
-import java.util.List;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class PropostaGetDTO {
+import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
+
+public class PropostaGetDTO implements Serializable {
 
     private Long id;
-    private Long autor;
-    private String nomeautor;
+
+    private PessoaDTO autor;
     private List<UnidadePropostaGetDTO> unidadePropostaGetDTOS;
     private String dataProposta;
     private String situacaoProposta;
+    private Set<PessoaDTO> candidatos;
+    private int numeroCandidatos;
+
+    public PropostaGetDTO() {
+    }
 
     public Long getId() {
         return id;
@@ -19,20 +29,12 @@ public class PropostaGetDTO {
         this.id = id;
     }
 
-    public Long getAutor() {
+    public PessoaDTO getAutor() {
         return autor;
     }
 
-    public void setAutor(Long autor) {
+    public void setAutor(PessoaDTO autor) {
         this.autor = autor;
-    }
-
-    public String getNomeautor() {
-        return nomeautor;
-    }
-
-    public void setNomeautor(String nomeautor) {
-        this.nomeautor = nomeautor;
     }
 
     public List<UnidadePropostaGetDTO> getUnidadePropostaGetDTOS() {
@@ -57,5 +59,27 @@ public class PropostaGetDTO {
 
     public void setSituacaoProposta(String situacaoProposta) {
         this.situacaoProposta = situacaoProposta;
+    }
+
+
+    public Set<PessoaDTO> getCandidatos() {
+        return candidatos;
+    }
+
+    public void setCandidatos(Set<PessoaDTO> candidatos) {
+        this.candidatos = candidatos;
+    }
+
+    public int getNumeroCandidatos() {
+        return numeroCandidatos;
+    }
+
+    public void setNumeroCandidatos(int numeroCandidatos) {
+        this.numeroCandidatos = numeroCandidatos;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
     }
 }

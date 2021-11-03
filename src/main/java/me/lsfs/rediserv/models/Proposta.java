@@ -2,12 +2,15 @@ package me.lsfs.rediserv.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import me.lsfs.rediserv.controllers.PropostaController;
 import me.lsfs.rediserv.models.utils.SituacaoPropostaEnum;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name="proposta")
@@ -18,7 +21,7 @@ public class Proposta {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "idautor")
+    @JoinColumn(name = PropostaController.IDAUTOR)
     private Pessoa autorProposta;
 
     @ManyToMany
@@ -28,11 +31,24 @@ public class Proposta {
             joinColumns = @JoinColumn(name = "idproposta"),
             inverseJoinColumns = @JoinColumn(name = "idunidade")
     )
-    private List<Unidade> unidades;
+    private Set<Unidade> unidades;
 
     private LocalDate dataProposta;
 
     private SituacaoPropostaEnum situacaoProposta;
+
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JsonIgnoreProperties("propostas")
+    @JoinTable(
+            name = "proposta_candidato",
+            joinColumns = @JoinColumn(name = "idproposta"),
+            inverseJoinColumns = @JoinColumn(name = "idpessoa")
+    )
+    private Set<Pessoa> candidatos;
+
+    private String cargoAutor;
+
 
     public Proposta() {
     }
@@ -53,11 +69,11 @@ public class Proposta {
         this.autorProposta = autorProposta;
     }
 
-    public List<Unidade> getUnidades() {
+    public Set<Unidade> getUnidades() {
         return unidades;
     }
 
-    public void setUnidades(List<Unidade> unidades) {
+    public void setUnidades(Set<Unidade> unidades) {
         this.unidades = unidades;
     }
 
@@ -77,6 +93,15 @@ public class Proposta {
         this.situacaoProposta = situacaoProposta;
     }
 
+    public Set<Pessoa> getCandidato() {
+        return candidatos;
+    }
+
+    public void setCandidato(Set<Pessoa> candidato) {
+        this.candidatos = candidato;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -88,5 +113,10 @@ public class Proposta {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
     }
 }
