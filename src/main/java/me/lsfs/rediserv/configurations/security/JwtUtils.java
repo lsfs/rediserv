@@ -1,56 +1,75 @@
 package me.lsfs.rediserv.configurations.security;
 
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import me.lsfs.rediserv.models.Pessoa;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-@Service
+@Component
 public class JwtUtils {
 
-    @Value("${jwt.expiration}")
-    private String expiracao;
+        private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
-    @Value("${jwt.secret}")
-    private String secret;
+        @Value("${jwt.secret}")
+        private String jwtSecret;
 
-    public String gerarToken(Authentication authentication) {
+        @Value("${jwt.expiration}")
+        private int jwtExpirationMs;
 
-        Pessoa logado = (Pessoa) authentication.getPrincipal();
-        Date hoje = new Date();
+        @Autowired
+        ObjectMapper mapper;
 
-        Date dataExpiracao = new Date(hoje.getTime() + Long.parseLong(expiracao));
+        public String generateJwtToken(Authentication authentication) {
 
-        return Jwts.builder()
-                .setIssuer("Redistribuição de servidores")
-                .setSubject(logado.getId().toString())
-                .setIssuedAt(hoje)
-                .setExpiration(dataExpiracao)
-                .signWith(SignatureAlgorithm.HS512, secret)
-                .compact();
+            UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
-    }
-
-    public boolean isTokenValido(String token) {
-        try {
-            Jwts.parser().setSigningKey(this.secret).parseClaimsJws(token);
-            return true;
-        } catch (Exception e){
-            return false;
+            return Jwts.builder()
+                    .setSubject((userPrincipal.toString()))
+                    .setIssuedAt(new Date())
+                    .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                    .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                    .compact();
         }
 
+        public String getUserNameFromJwtToken(String token) throws JsonProcessingException {
 
+            String jwtUsuario = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+
+           JsonNode jsonNode = mapper.readTree(jwtUsuario);
+
+           String emailOriginal = jsonNode.get("email").toString();
+           String email = emailOriginal.replace("\"","").trim();
+
+            System.out.println(email);
+
+            return email;
+        }
+
+        public boolean validateJwtToken(String authToken) {
+            try {
+                Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
+                return true;
+            } catch (SignatureException e) {
+                logger.error("Invalid JWT signature: {}", e.getMessage());
+            } catch (MalformedJwtException e) {
+                logger.error("Invalid JWT token: {}", e.getMessage());
+            } catch (ExpiredJwtException e) {
+                logger.error("JWT token is expired: {}", e.getMessage());
+            } catch (UnsupportedJwtException e) {
+                logger.error("JWT token is unsupported: {}", e.getMessage());
+            } catch (IllegalArgumentException e) {
+                logger.error("JWT claims string is empty: {}", e.getMessage());
+            }
+
+            return false;
+        }
     }
-
-    public Long getIdPessoa(String token) {
-        Claims claims = Jwts.parser().setSigningKey(this.secret).parseClaimsJws(token).getBody();
-
-        return Long.parseLong(claims.getSubject());
-    }
-}
