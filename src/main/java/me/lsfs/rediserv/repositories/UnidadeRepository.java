@@ -1,6 +1,5 @@
 package me.lsfs.rediserv.repositories;
 
-import me.lsfs.rediserv.models.Cidade;
 import me.lsfs.rediserv.models.Unidade;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -2,13 +2,12 @@ package me.lsfs.rediserv.services;
 
 import me.lsfs.rediserv.exceptions.DadosException;
 import me.lsfs.rediserv.exceptions.NegocioException;
+import me.lsfs.rediserv.repositories.UnidadeRepository;
 import me.lsfs.rediserv.models.Cidade;
 import me.lsfs.rediserv.models.Instituicao;
 import me.lsfs.rediserv.models.Unidade;
 import me.lsfs.rediserv.dtos.UnidadeGetDTO;
 import me.lsfs.rediserv.dtos.UnidadeSaveDTO;
-import me.lsfs.rediserv.repositories.UnidadeRepository;
-import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -71,6 +70,13 @@ public class UnidadeService {
         UnidadeGetDTO unidadeGetDTO = converterModel(unidade);
 
         return unidadeGetDTO;
+    }
+
+    public Unidade buscarUnidadeObj(Long id){
+        Unidade unidade = unidadeRepository.findById(id)
+                .orElseThrow(() -> new DadosException("Erro: Unidade não localizada"));
+
+        return unidade;
     }
 
     public List<UnidadeGetDTO> buscarPorInstituicao(Long id) {

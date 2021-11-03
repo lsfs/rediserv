@@ -1,7 +1,6 @@
 package me.lsfs.rediserv.controllers;
 
 
-import me.lsfs.rediserv.models.Instituicao;
 import me.lsfs.rediserv.models.Unidade;
 import me.lsfs.rediserv.dtos.UnidadeGetDTO;
 import me.lsfs.rediserv.dtos.UnidadeSaveDTO;

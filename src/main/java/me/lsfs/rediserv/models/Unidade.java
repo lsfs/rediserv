@@ -1,9 +1,9 @@
 package me.lsfs.rediserv.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -18,18 +18,15 @@ public class Unidade {
     private String endereco;
 
     @ManyToOne
-    @JoinColumn(name = "id_instituicao")
+    @JoinColumn(name = "idinstituicao")
     private Instituicao instituicao;
 
     @ManyToOne
-    @JoinColumn(name = "id_cidade")
+    @JoinColumn(name = "idcidade")
     private Cidade cidade;
 
     private String telefone;
 
-    @JsonIgnore
-    @ManyToMany(mappedBy = "unidades", fetch = FetchType.EAGER)
-    private List<Proposta> propostas;
 
     public Unidade() {
     }
@@ -82,13 +79,6 @@ public class Unidade {
         this.telefone = telefone;
     }
 
-    public List<Proposta> getPropostas() {
-        return propostas;
-    }
-
-    public void setPropostas(List<Proposta> propostas) {
-        this.propostas = propostas;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -101,6 +91,11 @@ public class Unidade {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
     }
 
 
