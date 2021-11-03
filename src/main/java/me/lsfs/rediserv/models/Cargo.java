@@ -1,21 +1,20 @@
 package me.lsfs.rediserv.models;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name="cargo")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Cargo {
 
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nome;
-
-    @ManyToOne
-    @JoinColumn(name="idarea")
-    private Area area;
+    private String descricao;
 
     public Cargo() {
     }
@@ -28,32 +27,31 @@ public class Cargo {
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public String getDescricao() {
+        return descricao;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public Area getArea() {
-        return area;
-    }
-
-    public void setArea(Area area) {
-        this.area = area;
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Cargo cargo = (Cargo) o;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (null == obj || getClass() != obj.getClass()) return false;
+        Cargo cargo = (Cargo) obj;
         return Objects.equals(id, cargo.id);
     }
+
+
 
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
     }
 }

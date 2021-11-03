@@ -13,8 +13,8 @@ import java.util.Optional;
 public interface CargoRepository extends JpaRepository<Cargo,Long> {
 
 
-    @Query("SELECT c FROM Cargo c "
-            + " WHERE c.area.id = :idArea ORDER BY c.nome")
-    Optional<List<Cargo>> findByArea(Long idArea);
+//    @Query("SELECT c FROM Cargo c "
+//            + " WHERE c.area.id = :idArea ORDER BY c.nome")
+    //Optional<List<Cargo>> findByArea(Long idArea);
 
 }

@@ -1,7 +1,7 @@
 package me.lsfs.rediserv.controllers;
 
 import me.lsfs.rediserv.models.Cargo;
-import me.lsfs.rediserv.models.dtos.CargoSaveDTO;
+import me.lsfs.rediserv.dtos.CargoSaveDTO;
 import me.lsfs.rediserv.services.CargoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,16 +31,7 @@ public class CargoController {
         return ResponseEntity.ok().body(cargos);
     }
 
-    @PostMapping
-    public ResponseEntity<Cargo> inserir(
-            @RequestBody CargoSaveDTO cargoSaveDTO,
-            UriComponentsBuilder uriComponentsBuilder) {
 
-        Cargo cargoSalvo = cargoService.inserir(cargoSaveDTO);
-        URI uri = uriComponentsBuilder.path("/cargos/{id}")
-                .buildAndExpand(cargoSalvo.getId()).toUri();
-        return ResponseEntity.created(uri).body(cargoSalvo);
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Cargo> buscar(
@@ -52,14 +43,7 @@ public class CargoController {
 
     }
 
-    @PutMapping("/{id}")
-    public Cargo alterar(
-            @PathVariable Long id,
-            @RequestBody CargoSaveDTO cargoSaveDTO
-    ){
 
-       return cargoService.alterar(id, cargoSaveDTO);
-    }
 
     @DeleteMapping("/{id}")
     public void apagar(@PathVariable Long id){

@@ -2,10 +2,9 @@ package me.lsfs.rediserv.services;
 
 import me.lsfs.rediserv.exceptions.DadosException;
 import me.lsfs.rediserv.exceptions.NegocioException;
-import me.lsfs.rediserv.models.Area;
-import me.lsfs.rediserv.models.Cargo;
-import me.lsfs.rediserv.models.dtos.CargoSaveDTO;
 import me.lsfs.rediserv.repositories.CargoRepository;
+import me.lsfs.rediserv.models.Cargo;
+import me.lsfs.rediserv.dtos.CargoSaveDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -18,16 +17,16 @@ public class CargoService {
 
     CargoRepository cargoRepository;
     ModelMapper modelMapper;
-    AreaService areaService;
+
 
     @Autowired
     public CargoService(CargoRepository cargoRepository,
-                        ModelMapper modelMapper,
-                        AreaService areaService) {
+                        ModelMapper modelMapper
+                        ) {
 
         this.modelMapper = modelMapper;
         this.cargoRepository = cargoRepository;
-        this.areaService = areaService;
+
     }
 
 
@@ -35,11 +34,7 @@ public class CargoService {
         return cargoRepository.findAll();
     }
 
-    public Cargo inserir(CargoSaveDTO cargoSaveDTO) {
-        Cargo cargo = converterDTO(cargoSaveDTO);
 
-        return cargoRepository.save(cargo);
-    }
 
     public Cargo buscar(Long id) {
         Cargo cargo = cargoRepository.findById(id)
@@ -48,29 +43,15 @@ public class CargoService {
         return cargo;
     }
 
-    public List<Cargo> buscarPorArea(Long idArea) {
-        List<Cargo> listaCargos = cargoRepository
-                .findByArea(idArea)
-                .orElseThrow(() -> new DadosException("Cargos não encontrados"));
+//    public List<Cargo> buscarPorArea(Long idArea) {
+//        List<Cargo> listaCargos = cargoRepository
+//                .findByArea(idArea)
+//                .orElseThrow(() -> new DadosException("Cargos não encontrados"));
+//
+//        return listaCargos;
+//    }
 
-        return listaCargos;
-    }
 
-    public Cargo alterar(Long id, CargoSaveDTO cargoSaveDTO) {
-
-        validarDTO(cargoSaveDTO);
-        return cargoRepository.findById(id)
-                .map(registro -> {
-                    registro = converterDTO(cargoSaveDTO);
-                    registro.setId(id);
-
-                    return cargoRepository.save(registro);
-
-                }).orElseThrow(
-                        () -> new NegocioException("Id de cargo inválido")
-                );
-
-    }
 
     public void apagar(Long id) {
         try {
@@ -91,19 +72,8 @@ public class CargoService {
     }
 
 
-    private Cargo converterDTO(CargoSaveDTO cargoSaveDTO) {
 
-        Cargo cargo = modelMapper.map(cargoSaveDTO, Cargo.class);
-        Area areaBuscada = buscarArea(cargoSaveDTO.getArea());
-        cargo.setArea(areaBuscada);
 
-        return cargo;
-    }
-
-    private Area buscarArea(Long idarea) {
-        Area areaBuscada = areaService.buscar(idarea);
-        return areaBuscada;
-    }
 
 
 
