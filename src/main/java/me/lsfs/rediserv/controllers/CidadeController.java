@@ -2,8 +2,6 @@ package me.lsfs.rediserv.controllers;
 
 import me.lsfs.rediserv.models.Cidade;
 import me.lsfs.rediserv.dtos.CidadeSaveDTO;
-import me.lsfs.rediserv.models.Estado;
-import me.lsfs.rediserv.models.Instituicao;
 import me.lsfs.rediserv.services.CidadeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

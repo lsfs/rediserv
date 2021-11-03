@@ -1,5 +1,8 @@
 package me.lsfs.rediserv.models;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -52,5 +55,10 @@ public class Cidade {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
     }
 }
