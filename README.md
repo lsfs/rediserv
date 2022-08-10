@@ -8,5 +8,7 @@ Este projeto é fruto do trabalho de conclusão de curso do aluno **Luís Fernan
 
 O sistema permite que o usuário cadastre-se e submeta propostas de movimentação, informando seus dados profissionais, como cargo e área, bem como sua localização atual e para onde deseja ir. É possível também visualizar, buscar e demonstrar interesse por propostas públicas submetidas.
 
+## Licença
 
-Rediserv-api © 2022 by Giuliano Robledo e Luís Fernando Sampaio é licenciado na CC BY-NC-SA 4.0. Para ver uma cópia dessa licença visite http://creativecommons.org/licenses/by-nc-sa/4.0/
+Rediserv-api © 2022 by Giuliano Robledo e Luís Fernando Sampaio é licenciado na CC BY-NC-SA 4.0. a
+Para ver uma cópia dessa licença visite http://creativecommons.org/licenses/by-nc-sa/4.0/
