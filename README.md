@@ -10,5 +10,5 @@ O sistema permite que o usuário cadastre-se e submeta propostas de movimentaç�
 
 ## Licença
 
-Rediserv-api © 2022 by Giuliano Robledo e Luís Fernando Sampaio é licenciado na CC BY-NC-SA 4.0. a
+Rediserv-api © 2022 por Giuliano Robledo e Luís Fernando Sampaio é licenciado na CC BY-NC-SA 4.0.
 Para ver uma cópia dessa licença visite http://creativecommons.org/licenses/by-nc-sa/4.0/
